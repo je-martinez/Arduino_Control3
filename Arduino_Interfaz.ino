@@ -4,21 +4,35 @@ char val;
 int ledPin = 38; 
 int ledPin2 = 39; 
 int ledPin3 = 40; 
+int speaker = 41; 
 int panico = 0;
 char OPC = '1';
+int s[4];
 
 #define SDA_DIO 9
-#define RESET_DIO 8 
+#define RESET_DIO 8
+#define BTN_1 16724175
+#define BTN_2 16718055
+#define BTN_3 16743045 
 
 RFID RC522(SDA_DIO, RESET_DIO);
 
+#include <IRremote.h>
+int RECV_PIN = 13;
+int led = 39;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
 char C[4];
+
 
 void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(ledPin2, OUTPUT);
   pinMode(ledPin3, OUTPUT);
+  pinMode(speaker, OUTPUT);
   Serial.begin(9600); 
+  irrecv.enableIRIn();
 }
 
 void loop() {
@@ -31,6 +45,8 @@ void loop() {
      val = Serial.read();
    }
 
+    Control_Remoto();
+   
    if(panico == 1)
    {
     Panico();
@@ -98,9 +114,9 @@ void loop() {
           RC522.readCardSerial();
           for(int i=0;i<4;i++)
           {
-            C[i] = RC522.serNum[i];
+            s[i] = RC522.serNum[i];
           }
-       }
+       } 
        delay(500); 
        break;
 
@@ -111,7 +127,7 @@ void loop() {
      }
      break;
    }
-   Serial.println(OPC);
+   //Serial.println(s);
    delay(500);
 }
 
@@ -121,7 +137,9 @@ void Panico()
   if(panico == 1)
   {
     digitalWrite(ledPin, HIGH);
+    digitalWrite(speaker, HIGH);
     delay(30);
+    digitalWrite(speaker, LOW);
     digitalWrite(ledPin, LOW);
     delay(30);
     digitalWrite(ledPin2, HIGH);
@@ -155,5 +173,49 @@ void Panico()
     digitalWrite(ledPin, HIGH);
     delay(30);
     digitalWrite(ledPin, LOW);
-  }
+    digitalWrite(speaker, LOW);
+  }else
+    {
+      digitalWrite(speaker, LOW);
+    }
+}
+
+void Control_Remoto(){
+if (irrecv.decode(&results))
+    {
+     switch(results.value)
+     {
+       case BTN_1:
+       if(digitalRead(ledPin) == HIGH)
+       {
+        val = 'B';
+       }
+       else{
+        val = 'A';
+        }
+       break;
+
+       case BTN_2:
+       if(digitalRead(ledPin2) == HIGH)
+       {
+        val = 'D';
+       }
+       else{
+        val = 'C';
+        }
+       break;
+
+       case BTN_3:
+       if(digitalRead(ledPin3) == HIGH)
+       {
+        val = 'F';
+       }
+       else{
+        val = 'E';
+        }
+       break;
+     }
+     Serial.println(val);
+     irrecv.resume(); // Receive the next value
+    }
 }

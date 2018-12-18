@@ -51,6 +51,7 @@ void draw() {
   }
   // draw the button in the window
     text("Operaciones con Leds", 75, 5);
+    text("Operaciones con Tarjetas", 500, 5);
   on_button.Draw();
   on_button2.Draw();
   on_button3.Draw();
@@ -60,6 +61,9 @@ void draw() {
   if(lectura_on == 1)
   {
       on_button6.Draw();
+  }
+  else{
+    
   }
 
   
@@ -124,8 +128,10 @@ void mousePressed()
     estado_app = estado_app > 1 ? 0 : estado_app;
     println(estado_app);
     char envio = estado_app == 1 ? 'I':'J';
+    println(envio);
     myPort.write(envio);         //send a 1
     lectura_on = estado_app == 1 ? 1:0;
+    on_button5.label = estado_app == 1 ? "Desactivar Modulo de Tarjetas":"Activar Modulo de Tarjetas";
   }
   
    if (on_button6.MouseIsOver()) {
@@ -136,6 +142,7 @@ void mousePressed()
     char envio = clk6 == 1 ? 'A':'B';
     myPort.write(envio);         //send a 1
     println(clk6);
+    println(envio);
   }
 }
 
