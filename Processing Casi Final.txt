@@ -1,0 +1,281 @@
+import processing.serial.*;
+
+Serial myPort;  // Create object from Serial class
+
+Button on_button;  // Lampara 1
+Button on_button2;  // Lampara 2
+Button on_button3;  // Lampara 3
+Button on_button4;  // Panico
+
+Button on_button5;  // Selector 
+Button on_button6;  // Selector
+Button on_button7;  // Selector
+
+Button on_buttonUp;  // Selector
+Button on_buttonDown;  // Selector
+
+Button on_buttonCard;  // Selector
+
+int lectura_on = 0;
+int selected = 0;
+
+
+
+int clk = 0;       // number of times the button is clicked
+int clk2 = 0;
+int clk3 = 0;
+int clk4 = 0;
+
+int clk5 = 0;
+int clk6 = 0;
+int clk7 = 0;
+
+
+int estado_app = 0;
+
+String card;
+String message;
+
+void setup() {
+  size (600, 480);
+  smooth();
+  // create the button object
+  on_button = new Button("Led_1", 20, 20, 100, 50);
+  on_button2 = new Button("Led_2", 20, 90, 100, 50);
+  on_button3 = new Button("Led_3", 20, 160, 100, 50);
+  on_button4 = new Button("¡Panico!", 20, 230, 100, 50);
+  
+  on_button5 = new Button("Select Led_1", 200, 20, 100, 50);
+  on_button6 = new Button("Select Led_2", 200, 90, 100, 50);
+  on_button7 = new Button("Select Led_3", 200, 160, 100, 50);
+  on_buttonUp = new Button("+", 200, 230, 40, 40);
+  on_buttonDown = new Button("-", 250, 230, 40, 40);
+  on_buttonCard = new Button("Activar Desactivar M. Tarjetas", 380, 20, 200, 50);
+  myPort = new Serial(this, "COM8", 9600);
+  delay(100); //enter this
+}
+
+void draw() {
+  // draw a square if the mouse curser is over the button
+  if (on_button.MouseIsOver()) {
+  }
+  else {
+    // hide the square if the mouse cursor is not over the button
+    background(255);
+  }
+  // draw the button in the window
+  text("Operaciones con Leds", 75, 5);
+  text("Seleccionar para intensidad", 275, 5);
+  on_button.Draw();
+  on_button2.Draw();
+  on_button3.Draw();
+  on_button4.Draw();
+  
+  on_button5.Draw();
+  on_button6.Draw();
+  on_button7.Draw();
+  
+  on_buttonUp.Draw();
+  on_buttonDown.Draw();
+  on_buttonCard.Draw();
+  
+  if(selected == 1)
+  {
+      text("Led 1 Seleccionado", 250, 300);
+  }
+  else
+  {
+      if(selected == 2)
+      {
+          text("Led 2 Seleccionado", 250, 300);
+      }
+      else
+      {
+        if(selected == 3)
+        {
+            text("Led 3 Seleccionado", 250, 300);
+        }
+      }
+  }
+  
+
+  
+  
+  switch(selected)
+  {
+    case 1:
+    break;
+    
+    case 2:
+    text("Seleccionado 1", 75, 500);
+    break;
+    
+    case 3:
+    text("Seleccionado 1", 75, 500);
+    break;
+  }
+
+  
+}
+
+// mouse button clicked
+void mousePressed()
+{
+  if (on_button.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    print("Estado Led 1: ");
+    clk++;
+    clk = clk > 1 ? 0:clk;
+    char envio = 'A';
+    myPort.write(envio);         //send a 1
+    println(clk);
+
+
+  }
+  
+  if (on_button2.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    print("Estado Led 2: ");
+      clk2++;
+      clk2 = clk2 > 1 ? 0:clk2;
+      char envio = 'B';
+      myPort.write(envio);         //send a 1
+    println(clk2);
+    
+  }
+  
+  if (on_button3.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+     print("Estado Led 3: ");
+    clk3++;
+    clk3 = clk3 > 1 ? 0:clk3;
+    char envio = 'C';
+    myPort.write(envio);         //send a 1
+    println(clk3);
+  }
+  
+  if (on_button4.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    print("Estado Panico: ");
+    clk4++;
+    clk4 = clk4 > 1 ? 0:clk4;
+    println(clk4);
+    char envio = 'D';
+    myPort.write(envio);         //send a 1
+  }
+  
+    if (on_button5.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    println("Seleccion 1");
+    clk5++;
+    char envio = 'E';
+    selected = 1;
+    if(clk5 > 1)
+    {
+      selected = 0;clk5 = 0;
+    }
+    else
+    {
+        selected = 1;
+    }
+    myPort.write(envio);         //send a 1
+    println(selected);
+  }
+  
+    if (on_button6.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    println("Seleccion 2");
+    clk6++;
+    if(clk6 > 1)
+    {
+      selected = 0;clk6 = 0;
+    }
+    else
+    {
+        selected = 2;
+    }
+    char envio = 'F';
+    myPort.write(envio);         //send a 1
+    println(selected);
+  }
+  
+    if (on_button7.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    println("Seleccion 3");
+    clk7++;
+    if(clk7 > 1)
+    {
+      selected = 0;clk7 = 0;
+    }
+    else
+    {
+        selected = 3;
+    }
+    char envio = 'G';
+    myPort.write(envio);         //send a 1
+  }
+  
+    if (on_buttonUp.MouseIsOver()) {
+    // print some text to the console pane if the button is clicked
+    println("Seleccion UP");
+    char envio = 'H';
+    myPort.write(envio);         //send a 1
+  }
+  
+    if (on_buttonDown.MouseIsOver()) {  
+    // print some text to the console pane if the button is clicked
+    println("Seleccion Down");
+    char envio = 'I';
+    myPort.write(envio);         //send a 1
+  }
+  
+    if (on_buttonCard.MouseIsOver()) {  
+    // print some text to the console pane if the button is clicked
+    println("Seleccion Card");
+    char envio = 'J';
+    myPort.write(envio);     //send a 1
+    println(envio);
+  }
+}
+
+// the Button class
+class Button {
+  String label; // button label
+  float x;      // top left corner x position
+  float y;      // top left corner y position
+  float w;      // width of button
+  float h;      // height of button
+  
+  // constructor
+  Button(String labelB, float xpos, float ypos, float widthB, float heightB) {
+    label = labelB;
+    x = xpos;
+    y = ypos;
+    w = widthB;
+    h = heightB;
+  }
+  
+  void Draw() {
+    fill(218);
+    stroke(141);
+    rect(x, y, w, h, 10);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(label, x + (w / 2), y + (h / 2));
+  }
+  
+  boolean MouseIsOver() {
+    if (mouseX > x && mouseX < (x + w) && mouseY > y && mouseY < (y + h)) {
+      return true;
+    }
+    return false;
+  }
+}
+
+void serialEvent(Serial p) {
+  // get message till line break (ASCII > 13)
+  message = myPort.readStringUntil(13);
+  if(message != null){
+    println(message);
+  }
+}
